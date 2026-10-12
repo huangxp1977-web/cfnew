@@ -22,11 +22,13 @@ jobs:
         with:
           fetch-depth: 0
 
-      - name: Generate _worker.js for Cloudflare Pages
+      - name: Generate and sanitize _worker.js for Cloudflare Pages
         run: |
           if [ -f "明文源吗" ]; then
             cp "明文源吗" "_worker.js"
-            echo "Successfully copied '明文源吗' to '_worker.js'"
+            # Purge hardcoded third-party subconverter default from source
+            sed -i "s/解码64('aHR0cHM6Ly91cmwudjEubWsvc3Vi')/''/g" "_worker.js"
+            echo "Successfully generated and sanitized '_worker.js'"
           else
             echo "Error: '明文源吗' not found"
             exit 1
