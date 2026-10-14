@@ -1,14 +1,13 @@
-name: Auto Sync & Generate Pages Worker
+name: Auto Sync & Generate Pages Worker (Custom Dallas Edition)
 
 on:
-  schedule:
-    - cron: '0 2 * * *'  # 每天凌晨自动检查一次上游更新
   workflow_dispatch:     # 支持手动随时一键触发
   push:
     branches:
-      - main
+      - custom
     paths:
       - '明文源吗'
+      - '.github/workflows/pages-auto-sync.yml'
 
 permissions:
   contents: write
@@ -20,15 +19,52 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v4
         with:
+          ref: custom
           fetch-depth: 0
 
-      - name: Generate and sanitize _worker.js for Cloudflare Pages
+      - name: Generate, sanitize and inject Dallas Proxy into _worker.js
         run: |
           if [ -f "明文源吗" ]; then
             cp "明文源吗" "_worker.js"
-            # Purge hardcoded third-party subconverter default from source
+            # 1. 净化第三方订阅转换默认硬编码
             sed -i "s/解码64('aHR0cHM6Ly91cmwudjEubWsvc3Vi')/''/g" "_worker.js"
-            echo "Successfully generated and sanitized '_worker.js'"
+            
+            # 2. 注入达拉斯专属回源逻辑 (零污染，不改动上游业务)
+            # 在 export default { async fetch(请求735, 本地值734, 本地值733) { 之后插入拦截器
+            python3 -c "
+with open('_worker.js', 'r', encoding='utf-8') as f:
+    text = f.read()
+
+# 寻找入口位置
+target = 'async fetch(请求735, 本地值734, 本地值733) {'
+inject_code = '''async fetch(请求735, 本地值734, 本地值733) {
+    // === 🌟 达拉斯独享 VPS 专属直连回源中间件 (零污染隔离) ===
+    try {
+      const _reqUrl = new URL(请求735.url);
+      if (_reqUrl.pathname.startsWith('/ray-tunnel')) {
+        const _targetUrl = new URL('https://cpa.vpn-temp.de5.net' + _reqUrl.pathname + _reqUrl.search);
+        const _newHeaders = new Headers(请求735.headers);
+        _newHeaders.set('Host', 'cpa.vpn-temp.de5.net');
+        return fetch(new Request(_targetUrl, {
+          method: 请求735.method,
+          headers: _newHeaders,
+          body: 请求735.body,
+          redirect: 'manual'
+        }));
+      }
+    } catch(e) {}
+    // === 结束达拉斯拦截 ==='''
+
+if target in text:
+    text = text.replace(target, inject_code, 1)
+    with open('_worker.js', 'w', encoding='utf-8') as f:
+        f.write(text)
+    print('Dallas proxy hook successfully injected!')
+else:
+    print('Error: Target entry point not found in _worker.js')
+    exit(1)
+"
+            echo "Successfully generated and patched '_worker.js'"
           else
             echo "Error: '明文源吗' not found"
             exit 1
@@ -42,6 +78,6 @@ jobs:
           if git diff --staged --quiet; then
             echo "No changes in _worker.js, skipping commit."
           else
-            git commit -m "chore(pages): auto generate _worker.js from upstream source"
-            git push origin main
+            git commit -m "chore(pages): auto generate _worker.js with Dallas proxy hook"
+            git push origin custom
           fi
