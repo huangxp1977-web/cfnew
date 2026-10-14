@@ -613,6 +613,22 @@ function 解析地址值端口(输入) {
 }
 export default {
   async fetch(请求735, 本地值734, 本地值733) {
+    // === 🌟 达拉斯独享 VPS 专属直连回源中间件 (零污染隔离) ===
+    try {
+      const _reqUrl = new URL(请求735.url);
+      if (_reqUrl.pathname.startsWith('/ray-tunnel')) {
+        const _targetUrl = new URL('https://cpa.vpn-temp.de5.net' + _reqUrl.pathname + _reqUrl.search);
+        const _newHeaders = new Headers(请求735.headers);
+        _newHeaders.set('Host', 'cpa.vpn-temp.de5.net');
+        return fetch(new Request(_targetUrl, {
+          method: 请求735.method,
+          headers: _newHeaders,
+          body: 请求735.body,
+          redirect: 'manual'
+        }));
+      }
+    } catch(e) {}
+    // === 结束达拉斯拦截 ===
     try {
       const 是否网页套接字 = 请求735.headers.get('Upgrade') === atob('d2Vic29ja2V0');
       const 是否值732 = 请求735.method === 'POST';
