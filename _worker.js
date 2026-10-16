@@ -3013,7 +3013,7 @@ async function 处理订阅请求(请求507, 用户506, 网址505 = null) {
   // === 🌟 注入专属达拉斯独享纯净节点集群 (姿势 A · 优选域名多活容灾) ===
   try {
     const 达拉斯UUID = 'bb465149-f462-4375-8d26-32c400a5b5d9';
-    const 达拉斯ECH = 'cloudflare-ech.com%2Bhttps%3A%2F%2F1.1.1.1%2Fdns-query';
+    const 达拉斯ECH = 'cloudflare-ech.com%2Bhttps%3A%2F%2F223.5.5.5%2Fdns-query';
     
     // 从已洗净的存活优选域名池中，直取排位前 3 的黄金门牌 (40ms, 120ms, 150ms)
     const 候选门牌列表 = [
@@ -3024,7 +3024,7 @@ async function 处理订阅请求(请求507, 用户506, 网址505 = null) {
 
     候选门牌列表.forEach((门牌, 索引) => {
       const 节点后缀 = 索引 === 0 ? '主力专线' : `备选${索引}`;
-      const 达拉斯节点链接 = `vless://${达拉斯UUID}@${门牌}:443?encryption=none&security=tls&sni=${工作器域名504}&ech=${达拉斯ECH}&type=ws&host=${工作器域名504}&path=%2Fray-tunnel%3Fed%3D2048#${encodeURIComponent(`🇺🇸 US-Dallas-Private-CF (${节点后缀})`)}`;
+      const 达拉斯节点链接 = `vless://${达拉斯UUID}@${门牌}:443?encryption=none&security=tls&sni=${工作器域名504}&fp=chrome&type=ws&host=${工作器域名504}&path=%2Fray-tunnel%3Fed%3D2048&ech=${达拉斯ECH}#${encodeURIComponent(`🇺🇸 US-Dallas-Private-CF (${节点后缀})`)}`;
       最终链接列表.push(达拉斯节点链接);
     });
   } catch (达拉斯注入错误) {}
