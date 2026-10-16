@@ -280,15 +280,15 @@ let 备用地址列表 = [{
   port: 443
 }];
 const 直连域名列表 = [
-  { name: "cloudflare.182682.xyz", domain: "cloudflare.182682.xyz" },         // #1 136ms 官方亚太 5-IP 池
-  { name: "cloudflare-ip.mofashi.ltd", domain: "cloudflare-ip.mofashi.ltd" }, // #2 160ms 官方亚太 3-IP 池
-  { name: "cfip.1323123.xyz", domain: "cfip.1323123.xyz" },                   // #3 182ms 官方 172/162 段
-  { name: "cf.090227.xyz", domain: "cf.090227.xyz" },                         // #4 185ms 官方 104.26 段
-  { name: "bestcf.top", domain: "bestcf.top" },                               // #5 191ms 官方 104.18 段
-  { name: "xn--b6gac.eu.org", domain: "xn--b6gac.eu.org" },                   // #6 192ms 官方 172.67 段
-  { name: "cnamefuckxxs.yuchen.icu", domain: "cnamefuckxxs.yuchen.icu" },     // #7 193ms 官方 AS209242 段
-  { name: "cdn.tzpro.xyz", domain: "cdn.tzpro.xyz" },                         // #8 193ms 官方 172.67 段
-  { name: "cf.0sm.com", domain: "cf.0sm.com" }                                // #9 194ms 官方 104.18 段
+  { name: "cloudflare.182682.xyz", domain: "cloudflare.182682.xyz" },         // #1 135.6ms 官方亚太 5-IP 池
+  { name: "cloudflare-ip.mofashi.ltd", domain: "cloudflare-ip.mofashi.ltd" }, // #2 152.8ms 官方亚太 3-IP 池
+  { name: "cf.090227.xyz", domain: "cf.090227.xyz" },                         // #3 182.7ms 官方 104.26 段
+  { name: "cfip.1323123.xyz", domain: "cfip.1323123.xyz" },                   // #4 183.6ms 官方 172/162 段
+  { name: "cf.0sm.com", domain: "cf.0sm.com" },                                // #5 188.6ms 官方 104.18 段
+  { name: "xn--b6gac.eu.org", domain: "xn--b6gac.eu.org" },                   // #6 192.2ms 官方 172.67 段
+  { name: "bestcf.top", domain: "bestcf.top" },                               // #7 193.3ms 官方 104.18 段
+  { name: "cnamefuckxxs.yuchen.icu", domain: "cnamefuckxxs.yuchen.icu" },     // #8 193.3ms 官方 AS209242 段
+  { name: "cdn.tzpro.xyz", domain: "cdn.tzpro.xyz" }                          // #9 197.2ms 官方 172.67 段
 ];
 const 错误_无效数据 = atob('aW52YWxpZCBkYXRh');
 const 错误_无效用户 = atob('aW52YWxpZCB1c2Vy');
