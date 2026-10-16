@@ -279,51 +279,20 @@ let 备用地址列表 = [{
   regionCode: 'Multacom',
   port: 443
 }];
-const 直连域名列表 = [{
-  name: "cloudflare.182682.xyz",
-  domain: "cloudflare.182682.xyz"
-}, {
-  name: "speed.marisalnc.com",
-  domain: "speed.marisalnc.com"
-}, {
-  domain: "freeyx.cloudflare88.eu.org"
-}, {
-  domain: "bestcf.top"
-}, {
-  domain: "cdn.2020111.xyz"
-}, {
-  domain: "cfip.cfcdn.vip"
-}, {
-  domain: "cf.0sm.com"
-}, {
-  domain: "cf.090227.xyz"
-}, {
-  domain: "cf.zhetengsha.eu.org"
-}, {
-  domain: "cloudflare.9jy.cc"
-}, {
-  domain: "cf.zerone-cdn.pp.ua"
-}, {
-  domain: "cfip.1323123.xyz"
-}, {
-  domain: "cnamefuckxxs.yuchen.icu"
-}, {
-  domain: "cloudflare-ip.mofashi.ltd"
-}, {
-  domain: "115155.xyz"
-}, {
-  domain: "cname.xirancdn.us"
-}, {
-  domain: "f3058171cad.002404.xyz"
-}, {
-  domain: "8.889288.xyz"
-}, {
-  domain: "cdn.tzpro.xyz"
-}, {
-  domain: "cf.877771.xyz"
-}, {
-  domain: "xn--b6gac.eu.org"
-}];
+const 直连域名列表 = [
+  { name: "cf.877771.xyz", domain: "cf.877771.xyz" },               // 40ms 极速先锋 (Visa/大厂境内CDN加速)
+  { name: "cloudflare.182682.xyz", domain: "cloudflare.182682.xyz" }, // 120ms 官方亚太 5-IP 高可用池
+  { name: "cloudflare-ip.mofashi.ltd", domain: "cloudflare-ip.mofashi.ltd" }, // 150ms 抗丢包装甲
+  { name: "cf.090227.xyz", domain: "cf.090227.xyz" },               // 186ms 正常存活
+  { name: "cdn.tzpro.xyz", domain: "cdn.tzpro.xyz" },               // 186ms 正常存活
+  { name: "cnamefuckxxs.yuchen.icu", domain: "cnamefuckxxs.yuchen.icu" }, // 189ms 正常存活
+  { name: "cfip.1323123.xyz", domain: "cfip.1323123.xyz" },         // 190ms 优质存活 (162.159段)
+  { name: "cf.0sm.com", domain: "cf.0sm.com" },                     // 191ms 正常存活
+  { name: "xn--b6gac.eu.org", domain: "xn--b6gac.eu.org" },         // 192ms 正常存活
+  { name: "bestcf.top", domain: "bestcf.top" },                     // 198ms 正常存活
+  { name: "speed.marisalnc.com", domain: "speed.marisalnc.com" },   // 209ms 正常存活 (Linode日本)
+  { name: "cfip.cfcdn.vip", domain: "cfip.cfcdn.vip" }              // 225ms 正常存活
+];
 const 错误_无效数据 = atob('aW52YWxpZCBkYXRh');
 const 错误_无效用户 = atob('aW52YWxpZCB1c2Vy');
 const 错误_不支持命令 = atob('Y29tbWFuZCBpcyBub3Qgc3VwcG9ydGVk');
@@ -3046,11 +3015,11 @@ async function 处理订阅请求(请求507, 用户506, 网址505 = null) {
     const 达拉斯UUID = 'bb465149-f462-4375-8d26-32c400a5b5d9';
     const 达拉斯ECH = 'cloudflare-ech.com%2Bhttps%3A%2F%2F1.1.1.1%2Fdns-query';
     
-    // 从 21 个优选域名池中，精选前 3 个最稳健的顶级大厂加速门牌
+    // 从已洗净的存活优选域名池中，直取排位前 3 的黄金门牌 (40ms, 120ms, 150ms)
     const 候选门牌列表 = [
-      (直连域名列表 && 直连域名列表[0] && 直连域名列表[0].domain) ? 直连域名列表[0].domain : 'cloudflare.182682.xyz',
-      (直连域名列表 && 直连域名列表[1] && 直连域名列表[1].domain) ? 直连域名列表[1].domain : 'speed.marisalnc.com',
-      (直连域名列表 && 直连域名列表[2] && 直连域名列表[2].domain) ? 直连域名列表[2].domain : 'freeyx.cloudflare88.eu.org'
+      直连域名列表[0].domain, // cf.877771.xyz (40ms 极速先锋)
+      直连域名列表[1].domain, // cloudflare.182682.xyz (120ms 官方亚太 5-IP 高可用池)
+      直连域名列表[2].domain  // cloudflare-ip.mofashi.ltd (150ms 抗丢包装甲)
     ];
 
     候选门牌列表.forEach((门牌, 索引) => {
