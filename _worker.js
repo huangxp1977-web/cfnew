@@ -2996,13 +2996,13 @@ async function 处理订阅请求(请求507, 用户506, 网址505 = null) {
     // 达拉斯反代专属网关 (白嫖 cpa 已有 SSL 证书与 1Panel 路径反代)
     const 达拉斯域名 = 'cpa.vpn-temp.de5.net';
     const 达拉斯UUID = 'bb465149-f462-4375-8d26-32c400a5b5d9';
-    const 达拉斯ECH = 'cloudflare-ech.com%2Bhttps%3A%2F%2F1.1.1.1%2Fdns-query';
+    const 达拉斯ECH = 'cloudflare-ech.com%2Bhttps%3A%2F%2F223.5.5.5%2Fdns-query';
     
     // 遍历全部 9 个已洗净、100% 官方 AS13335/AS209242 Anycast 存活优选域名
     直连域名列表.forEach((项, 索引) => {
       const 门牌 = 项.domain;
       const 节点标签 = 索引 === 0 ? 'US-Dallas-Private-CF' : `US-Dallas-Private-CF-备选${索引}`;
-      const 达拉斯节点链接 = `vless://${达拉斯UUID}@${门牌}:443?encryption=none&security=tls&sni=${达拉斯域名}&type=ws&host=${达拉斯域名}&path=%2Fray-tunnel%3Fed%3D2048&ech=${达拉斯ECH}#${encodeURIComponent(节点标签)}`;
+      const 达拉斯节点链接 = `vless://${达拉斯UUID}@${门牌}:443?encryption=none&security=tls&sni=${达拉斯域名}&fp=chrome&type=ws&host=${达拉斯域名}&path=%2Fray-tunnel%3Fed%3D2048&ech=${达拉斯ECH}#${encodeURIComponent(节点标签)}`;
       最终链接列表.push(达拉斯节点链接);
     });
   } catch (达拉斯注入错误) {}
