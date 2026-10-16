@@ -582,22 +582,6 @@ function 解析地址值端口(输入) {
 }
 export default {
   async fetch(请求735, 本地值734, 本地值733) {
-    // === 🌟 达拉斯独享 VPS 专属直连回源中间件 (零污染隔离) ===
-    try {
-      const _reqUrl = new URL(请求735.url);
-      if (_reqUrl.pathname.startsWith('/ray-tunnel')) {
-        const _targetUrl = new URL('https://cpa.vpn-temp.de5.net' + _reqUrl.pathname + _reqUrl.search);
-        const _newHeaders = new Headers(请求735.headers);
-        _newHeaders.set('Host', 'cpa.vpn-temp.de5.net');
-        return fetch(new Request(_targetUrl, {
-          method: 请求735.method,
-          headers: _newHeaders,
-          body: 请求735.body,
-          redirect: 'manual'
-        }));
-      }
-    } catch(e) {}
-    // === 结束达拉斯拦截 ===
     try {
       const 是否网页套接字 = 请求735.headers.get('Upgrade') === atob('d2Vic29ja2V0');
       const 是否值732 = 请求735.method === 'POST';
@@ -3012,8 +2996,10 @@ async function 处理订阅请求(请求507, 用户506, 网址505 = null) {
 
   // === 🌟 注入专属达拉斯独享纯净节点集群 (姿势 A · 优选域名多活容灾) ===
   try {
+    // 达拉斯反代专属网关 (白嫖 cpa 已有 SSL 证书与 1Panel 路径反代)
+    const 达拉斯域名 = 'cpa.vpn-temp.de5.net';
     const 达拉斯UUID = 'bb465149-f462-4375-8d26-32c400a5b5d9';
-    const 达拉斯ECH = 'cloudflare-ech.com%2Bhttps%3A%2F%2F223.5.5.5%2Fdns-query';
+    const 达拉斯ECH = 'cloudflare-ech.com%2Bhttps%3A%2F%2F1.1.1.1%2Fdns-query';
     
     // 从已洗净的存活优选域名池中，直取排位前 3 的黄金门牌 (40ms, 120ms, 150ms)
     const 候选门牌列表 = [
@@ -3024,7 +3010,7 @@ async function 处理订阅请求(请求507, 用户506, 网址505 = null) {
 
     候选门牌列表.forEach((门牌, 索引) => {
       const 节点后缀 = 索引 === 0 ? '主力专线' : `备选${索引}`;
-      const 达拉斯节点链接 = `vless://${达拉斯UUID}@${门牌}:443?encryption=none&security=tls&sni=${工作器域名504}&fp=chrome&type=ws&host=${工作器域名504}&path=%2Fray-tunnel%3Fed%3D2048&ech=${达拉斯ECH}#${encodeURIComponent(`🇺🇸 US-Dallas-Private-CF (${节点后缀})`)}`;
+      const 达拉斯节点链接 = `vless://${达拉斯UUID}@${门牌}:443?encryption=none&security=tls&sni=${达拉斯域名}&type=ws&host=${达拉斯域名}&path=%2Fray-tunnel%3Fed%3D2048&ech=${达拉斯ECH}#${encodeURIComponent(`US-Dallas-Private-CF${索引 === 0 ? '' : `-备选${索引}`}`)}`;
       最终链接列表.push(达拉斯节点链接);
     });
   } catch (达拉斯注入错误) {}
