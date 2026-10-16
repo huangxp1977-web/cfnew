@@ -280,18 +280,15 @@ let 备用地址列表 = [{
   port: 443
 }];
 const 直连域名列表 = [
-  { name: "cf.877771.xyz", domain: "cf.877771.xyz" },               // 40ms 极速先锋 (Visa/大厂境内CDN加速)
-  { name: "cloudflare.182682.xyz", domain: "cloudflare.182682.xyz" }, // 120ms 官方亚太 5-IP 高可用池
-  { name: "cloudflare-ip.mofashi.ltd", domain: "cloudflare-ip.mofashi.ltd" }, // 150ms 抗丢包装甲
-  { name: "cf.090227.xyz", domain: "cf.090227.xyz" },               // 186ms 正常存活
-  { name: "cdn.tzpro.xyz", domain: "cdn.tzpro.xyz" },               // 186ms 正常存活
-  { name: "cnamefuckxxs.yuchen.icu", domain: "cnamefuckxxs.yuchen.icu" }, // 189ms 正常存活
-  { name: "cfip.1323123.xyz", domain: "cfip.1323123.xyz" },         // 190ms 优质存活 (162.159段)
-  { name: "cf.0sm.com", domain: "cf.0sm.com" },                     // 191ms 正常存活
-  { name: "xn--b6gac.eu.org", domain: "xn--b6gac.eu.org" },         // 192ms 正常存活
-  { name: "bestcf.top", domain: "bestcf.top" },                     // 198ms 正常存活
-  { name: "speed.marisalnc.com", domain: "speed.marisalnc.com" },   // 209ms 正常存活 (Linode日本)
-  { name: "cfip.cfcdn.vip", domain: "cfip.cfcdn.vip" }              // 225ms 正常存活
+  { name: "cloudflare.182682.xyz", domain: "cloudflare.182682.xyz" },         // #1 136ms 官方亚太 5-IP 池
+  { name: "cloudflare-ip.mofashi.ltd", domain: "cloudflare-ip.mofashi.ltd" }, // #2 160ms 官方亚太 3-IP 池
+  { name: "cfip.1323123.xyz", domain: "cfip.1323123.xyz" },                   // #3 182ms 官方 172/162 段
+  { name: "cf.090227.xyz", domain: "cf.090227.xyz" },                         // #4 185ms 官方 104.26 段
+  { name: "bestcf.top", domain: "bestcf.top" },                               // #5 191ms 官方 104.18 段
+  { name: "xn--b6gac.eu.org", domain: "xn--b6gac.eu.org" },                   // #6 192ms 官方 172.67 段
+  { name: "cnamefuckxxs.yuchen.icu", domain: "cnamefuckxxs.yuchen.icu" },     // #7 193ms 官方 AS209242 段
+  { name: "cdn.tzpro.xyz", domain: "cdn.tzpro.xyz" },                         // #8 193ms 官方 172.67 段
+  { name: "cf.0sm.com", domain: "cf.0sm.com" }                                // #9 194ms 官方 104.18 段
 ];
 const 错误_无效数据 = atob('aW52YWxpZCBkYXRh');
 const 错误_无效用户 = atob('aW52YWxpZCB1c2Vy');
@@ -2994,23 +2991,18 @@ async function 处理订阅请求(请求507, 用户506, 网址505 = null) {
     最终链接列表.push(错误链接);
   }
 
-  // === 🌟 注入专属达拉斯独享纯净节点集群 (姿势 A · 优选域名多活容灾) ===
+  // === 🌟 注入专属达拉斯独享纯净节点集群 (姿势 A · 9大纯正官方Anycast门牌容灾) ===
   try {
     // 达拉斯反代专属网关 (白嫖 cpa 已有 SSL 证书与 1Panel 路径反代)
     const 达拉斯域名 = 'cpa.vpn-temp.de5.net';
     const 达拉斯UUID = 'bb465149-f462-4375-8d26-32c400a5b5d9';
     const 达拉斯ECH = 'cloudflare-ech.com%2Bhttps%3A%2F%2F1.1.1.1%2Fdns-query';
     
-    // 从已洗净的存活优选域名池中，直取排位前 3 的黄金门牌 (40ms, 120ms, 150ms)
-    const 候选门牌列表 = [
-      直连域名列表[0].domain, // cf.877771.xyz (40ms 极速先锋)
-      直连域名列表[1].domain, // cloudflare.182682.xyz (120ms 官方亚太 5-IP 高可用池)
-      直连域名列表[2].domain  // cloudflare-ip.mofashi.ltd (150ms 抗丢包装甲)
-    ];
-
-    候选门牌列表.forEach((门牌, 索引) => {
-      const 节点后缀 = 索引 === 0 ? '主力专线' : `备选${索引}`;
-      const 达拉斯节点链接 = `vless://${达拉斯UUID}@${门牌}:443?encryption=none&security=tls&sni=${达拉斯域名}&type=ws&host=${达拉斯域名}&path=%2Fray-tunnel%3Fed%3D2048&ech=${达拉斯ECH}#${encodeURIComponent(`US-Dallas-Private-CF${索引 === 0 ? '' : `-备选${索引}`}`)}`;
+    // 遍历全部 9 个已洗净、100% 官方 AS13335/AS209242 Anycast 存活优选域名
+    直连域名列表.forEach((项, 索引) => {
+      const 门牌 = 项.domain;
+      const 节点标签 = 索引 === 0 ? 'US-Dallas-Private-CF' : `US-Dallas-Private-CF-备选${索引}`;
+      const 达拉斯节点链接 = `vless://${达拉斯UUID}@${门牌}:443?encryption=none&security=tls&sni=${达拉斯域名}&type=ws&host=${达拉斯域名}&path=%2Fray-tunnel%3Fed%3D2048&ech=${达拉斯ECH}#${encodeURIComponent(节点标签)}`;
       最终链接列表.push(达拉斯节点链接);
     });
   } catch (达拉斯注入错误) {}
