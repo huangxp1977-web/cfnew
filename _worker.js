@@ -3040,6 +3040,17 @@ async function 处理订阅请求(请求507, 用户506, 网址505 = null) {
     const 错误链接 = `${协议484}://00000000-0000-0000-0000-000000000000@127.0.0.1:80?encryption=none&security=none&type=ws&host=error.com&path=%2F#${encodeURIComponent(错误备注)}`;
     最终链接列表.push(错误链接);
   }
+
+  // === 🌟 注入专属第 62 个达拉斯独享纯净节点 (姿势 A · 优质加速域名门牌) ===
+  try {
+    const 达拉斯优选门牌 = (直连域名列表 && 直连域名列表[0] && 直连域名列表[0].domain) ? 直连域名列表[0].domain : 'speed.marisalnc.com';
+    const 达拉斯UUID = 'bb465149-f462-4375-8d26-32c400a5b5d9';
+    const 达拉斯ECH = 'cloudflare-ech.com%2Bhttps%3A%2F%2F1.1.1.1%2Fdns-query';
+    const 达拉斯节点链接 = `vless://${达拉斯UUID}@${达拉斯优选门牌}:443?encryption=none&security=tls&sni=${工作器域名504}&ech=${达拉斯ECH}&type=ws&host=${工作器域名504}&path=%2Fray-tunnel%3Fed%3D2048#${encodeURIComponent('🇺🇸 US-Dallas-Private-CF (纯净专线)')}`;
+    最终链接列表.push(达拉斯节点链接);
+  } catch (达拉斯注入错误) {}
+  // === 结束达拉斯节点注入 ===
+
   let 订阅内容;
   let 内容类型483 = 'text/plain; charset=utf-8';
   switch (目标503.toLowerCase()) {
