@@ -288,7 +288,10 @@ const 直连域名列表 = [
   { name: "xn--b6gac.eu.org", domain: "xn--b6gac.eu.org" },                   // #6 192.2ms 官方 172.67 段
   { name: "bestcf.top", domain: "bestcf.top" },                               // #7 193.3ms 官方 104.18 段
   { name: "cnamefuckxxs.yuchen.icu", domain: "cnamefuckxxs.yuchen.icu" },     // #8 193.3ms 官方 AS209242 段
-  { name: "cdn.tzpro.xyz", domain: "cdn.tzpro.xyz" }                          // #9 197.2ms 官方 172.67 段
+  { name: "cdn.tzpro.xyz", domain: "cdn.tzpro.xyz" },                         // #9 197.2ms 官方 172.67 段
+  { name: "cf.877771.xyz", domain: "cf.877771.xyz" },                         // #10 救急反代 (湖北联通 20ms)
+  { name: "speed.marisalnc.com", domain: "speed.marisalnc.com" },             // #11 救急反代 (Linode日本)
+  { name: "cfip.cfcdn.vip", domain: "cfip.cfcdn.vip" }                        // #12 救急反代 (Google云)
 ];
 const 错误_无效数据 = atob('aW52YWxpZCBkYXRh');
 const 错误_无效用户 = atob('aW52YWxpZCB1c2Vy');
@@ -2998,8 +3001,9 @@ async function 处理订阅请求(请求507, 用户506, 网址505 = null) {
     const 达拉斯UUID = 'bb465149-f462-4375-8d26-32c400a5b5d9';
     const 达拉斯ECH = 'cloudflare-ech.com%2Bhttps%3A%2F%2F223.5.5.5%2Fdns-query';
     
-    // 遍历全部 9 个已洗净、100% 官方 AS13335/AS209242 Anycast 存活优选域名
-    直连域名列表.forEach((项, 索引) => {
+    // 从已洗净的存活域名池中，直接按顺序截取前 9 个纯正官方 Anycast 域名生成 9 个专线节点
+    const 达拉斯门牌列表 = 直连域名列表.slice(0, 9);
+    达拉斯门牌列表.forEach((项, 索引) => {
       const 门牌 = 项.domain;
       const 节点标签 = 索引 === 0 ? 'US-Dallas-Private-CF' : `US-Dallas-Private-CF-备选${索引}`;
       const 达拉斯节点链接 = `vless://${达拉斯UUID}@${门牌}:443?encryption=none&security=tls&sni=${达拉斯域名}&fp=chrome&type=ws&host=${达拉斯域名}&path=%2Fray-tunnel%3Fed%3D2048&ech=${达拉斯ECH}#${encodeURIComponent(节点标签)}`;
