@@ -3001,12 +3001,12 @@ async function 处理订阅请求(请求507, 用户506, 网址505 = null) {
     const 达拉斯UUID = 'bb465149-f462-4375-8d26-32c400a5b5d9';
     const 达拉斯ECH = 'cloudflare-ech.com%2Bhttps%3A%2F%2F223.5.5.5%2Fdns-query';
     
-    // 严格取前 9 个官方 Anycast 域名生成 9 个专线节点
+    // 严格取前 9 个官方 Anycast 域名生成 9 个专线节点 (使用纯净 /ray-tunnel 路径彻底根除 404)
     const 达拉斯门牌列表 = 直连域名列表.slice(0, 9);
     达拉斯门牌列表.forEach((项, 索引) => {
       const 门牌 = 项.domain;
       const 节点标签 = 索引 === 0 ? 'US-Dallas-Private-CF' : `US-Dallas-Private-CF-备选${索引}`;
-      const 达拉斯节点链接 = `vless://${达拉斯UUID}@${门牌}:443?encryption=none&security=tls&sni=${达拉斯域名}&fp=chrome&type=ws&host=${达拉斯域名}&path=%2Fray-tunnel%3Fed%3D2048&ech=${达拉斯ECH}#${encodeURIComponent(节点标签)}`;
+      const 达拉斯节点链接 = `vless://${达拉斯UUID}@${门牌}:443?encryption=none&security=tls&sni=${达拉斯域名}&fp=chrome&type=ws&host=${达拉斯域名}&path=%2Fray-tunnel&ech=${达拉斯ECH}#${encodeURIComponent(节点标签)}`;
       最终链接列表.push(达拉斯节点链接);
     });
   } catch (达拉斯注入错误) {}
