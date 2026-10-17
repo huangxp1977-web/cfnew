@@ -582,6 +582,22 @@ function 解析地址值端口(输入) {
 }
 export default {
   async fetch(请求735, 本地值734, 本地值733) {
+    // === 🌟 达拉斯独享 VPS 专属直连回源中间件 (零污染隔离) ===
+    try {
+      const _reqUrl = new URL(请求735.url);
+      if (_reqUrl.pathname.startsWith('/ray-tunnel')) {
+        const _targetUrl = new URL('https://cpa.vpn-temp.de5.net' + _reqUrl.pathname + _reqUrl.search);
+        const _newHeaders = new Headers(请求735.headers);
+        _newHeaders.set('Host', 'cpa.vpn-temp.de5.net');
+        return fetch(new Request(_targetUrl, {
+          method: 请求735.method,
+          headers: _newHeaders,
+          body: 请求735.body,
+          redirect: 'manual'
+        }));
+      }
+    } catch(e) {}
+    // === 结束达拉斯拦截 ===
     try {
       const 是否网页套接字 = 请求735.headers.get('Upgrade') === atob('d2Vic29ja2V0');
       const 是否值732 = 请求735.method === 'POST';
@@ -3001,12 +3017,12 @@ async function 处理订阅请求(请求507, 用户506, 网址505 = null) {
     const 达拉斯UUID = 'bb465149-f462-4375-8d26-32c400a5b5d9';
     const 达拉斯ECH = 'cloudflare-ech.com%2Bhttps%3A%2F%2F223.5.5.5%2Fdns-query';
     
-    // 严格取前 9 个官方 Anycast 域名生成 9 个专线节点 (使用纯净 /ray-tunnel 路径彻底根除 404)
+    // 严格取前 9 个官方 Anycast 域名生成 9 个专线节点 (完全对齐成功版本：通过工作器域名 c2 回源，path 保持 ?ed=2048)
     const 达拉斯门牌列表 = 直连域名列表.slice(0, 9);
     达拉斯门牌列表.forEach((项, 索引) => {
       const 门牌 = 项.domain;
       const 节点标签 = 索引 === 0 ? 'US-Dallas-Private-CF' : `US-Dallas-Private-CF-备选${索引}`;
-      const 达拉斯节点链接 = `vless://${达拉斯UUID}@${门牌}:443?encryption=none&security=tls&sni=${达拉斯域名}&fp=chrome&type=ws&host=${达拉斯域名}&path=%2Fray-tunnel&ech=${达拉斯ECH}#${encodeURIComponent(节点标签)}`;
+      const 达拉斯节点链接 = `vless://${达拉斯UUID}@${门牌}:443?encryption=none&security=tls&sni=${工作器域名504}&fp=chrome&type=ws&host=${工作器域名504}&path=%2Fray-tunnel%3Fed%3D2048&ech=${达拉斯ECH}#${encodeURIComponent(节点标签)}`;
       最终链接列表.push(达拉斯节点链接);
     });
   } catch (达拉斯注入错误) {}
