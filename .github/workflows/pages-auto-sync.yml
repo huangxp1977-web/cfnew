@@ -1,0 +1,84 @@
+name: Auto Sync & Generate Pages Worker (Custom Dallas Edition)
+
+on:
+  workflow_dispatch:     # 支持手动随时一键触发
+  push:
+    branches:
+      - custom
+    paths:
+      - '明文源吗'
+      - '.github/workflows/pages-auto-sync.yml'
+
+permissions:
+  contents: write
+
+jobs:
+  sync-and-build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          ref: custom
+          fetch-depth: 0
+
+      - name: Generate, sanitize and inject Dallas Proxy into _worker.js
+        run: |
+          if [ -f "明文源吗" ]; then
+            cp "明文源吗" "_worker.js"
+            # 1. 净化第三方订阅转换默认硬编码
+            sed -i "s/解码64('aHR0cHM6Ly91cmwudjEubWsvc3Vi')/''/g" "_worker.js"
+            
+            # 2. 注入达拉斯专属回源逻辑 (零污染，不改动上游业务)
+            # 在 export default { async fetch(请求735, 本地值734, 本地值733) { 之后插入拦截器
+            python3 -c "
+            with open('_worker.js', 'r', encoding='utf-8') as f:
+                text = f.read()
+
+            target = 'async fetch(请求735, 本地值734, 本地值733) {'
+            inject_code = '''async fetch(请求735, 本地值734, 本地值733) {
+                // === 🌟 达拉斯独享 VPS 专属直连回源中间件 (零污染隔离) ===
+                try {
+                  const _reqUrl = new URL(请求735.url);
+                  const _dallasHost = (本地值734 && (本地值734.DALLAS_HOST || 本地值734.dallas_host)) || (typeof 键值配置 !== 'undefined' && 键值配置.DALLAS_HOST) || '';
+                  const _dallasPath = (本地值734 && (本地值734.DALLAS_PATH || 本地值734.dallas_path)) || '/ray-tunnel';
+                  if (_dallasHost && _reqUrl.pathname.startsWith(_dallasPath)) {
+                    const _targetUrl = new URL(\`https://\${_dallasHost}\${_reqUrl.pathname}\${_reqUrl.search}\`);
+                    const _newHeaders = new Headers(请求735.headers);
+                    _newHeaders.set('Host', _dallasHost);
+                    return fetch(new Request(_targetUrl, {
+                      method: 请求735.method,
+                      headers: _newHeaders,
+                      body: 请求735.body,
+                      redirect: 'manual'
+                    }));
+                  }
+                } catch(e) {}
+                // === 结束达拉斯拦截 ==='''
+
+            if target in text:
+                text = text.replace(target, inject_code, 1)
+                with open('_worker.js', 'w', encoding='utf-8') as f:
+                    f.write(text)
+                print('Dallas proxy hook successfully injected!')
+            else:
+                print('Error: Target entry point not found in _worker.js')
+                exit(1)
+            "
+            echo "Successfully generated and patched '_worker.js'"
+          else
+            echo "Error: '明文源吗' not found"
+            exit 1
+          fi
+
+      - name: Commit and push _worker.js
+        run: |
+          git config --global user.name "github-actions[bot]"
+          git config --global user.email "github-actions[bot]@users.noreply.github.com"
+          git add _worker.js
+          if git diff --staged --quiet; then
+            echo "No changes in _worker.js, skipping commit."
+          else
+            git commit -m "chore(pages): auto generate _worker.js with Dallas proxy hook"
+            git push origin custom
+          fi
